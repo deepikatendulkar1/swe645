@@ -36,17 +36,21 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to GKE') {
-            steps {
-                script {
-                    withCredentials([file(credentialsId: gcpServiceAccount, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-                        sh '''
-                        export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
-                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                        gcloud container clusters get-credentials k8s-cluster-1 --zone us-east1-b
-                        kubectl apply -f deployment.yaml
-                        '''
-                    }
+stage('Deploy to GKE') {
+    steps {
+        script {
+            withCredentials([file(credentialsId: 'your-credentials-id', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                sh '''
+                export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
+                gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                gcloud config set project YOUR_PROJECT_ID  # Add this line
+                gcloud container clusters get-credentials k8s-cluster-1 --zone us-east1-b
+                '''
+            }
+        }
+    }
+}
+
                 }
             }
         }
