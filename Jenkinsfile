@@ -4,7 +4,7 @@ pipeline {
         registry = "sanjanavegesna/myapp"
         registryCredential = 'docker-pass'
         gcpProject = 'superb-shelter-440100-q7'
-        gcpServiceAccount = 'gcpServiceAccount'
+        gcpServiceAccount = 'jenkins1@superb-shelter-440100-q7.iam.gserviceaccount.com'
     }
     stages {
         stage('Clone Repository') {
@@ -39,7 +39,7 @@ pipeline {
 stage('Deploy to GKE') {
     steps {
         script {
-            withCredentials([file(credentialsId: 'gcpServiceAccount', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+            withCredentials([file(credentialsId: 'jenkins1@superb-shelter-440100-q7.iam.gserviceaccount.com', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
                 sh '''
                 export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
                 gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
