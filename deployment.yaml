@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp
+  name: newapp
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: myapp
+      app: newapp
   template:
     metadata:
       labels:
-        app: myapp
+        app: newapp
     spec:
       containers:
-      - name: myapp-container
+      - name: newapp-container
         image: sanjanavegesna/latest
         imagePullPolicy: Always
         ports:
