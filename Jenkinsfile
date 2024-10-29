@@ -47,6 +47,7 @@ stage('Deploy to GKE') {
                         gcloud container clusters get-credentials cluster-1 --zone us-central1-c
                         kubectl apply -f deployment.yaml
                         kubectl apply -f service.yaml
+                        kubectl delete pod -l app=newapp
                         
                         '''
             }
