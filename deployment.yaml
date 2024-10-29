@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: newapp
+  template:
+    metadata:
+      labels:
+        app: newapp
+    spec:
+      containers:
+      - name: newapp-container
+        image: sanjanavegesna/newapp:v1
+        ports:
+        - containerPort: 80
