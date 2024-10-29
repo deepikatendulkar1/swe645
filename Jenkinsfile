@@ -3,7 +3,7 @@ pipeline {
     environment {
         registry = "sanjanavegesna/myapp"
         registryCredential = 'docker-pass'
-        gcpProject = 'fabled-plating-440011-d6'
+        gcpProject = 'superb-shelter-440100-q7'
         gcpServiceAccount = 'gcpServiceAccount'
     }
     stages {
