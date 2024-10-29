@@ -15,5 +15,6 @@ spec:
       containers:
       - name: newapp-container
         image: sanjanavegesna/latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
