@@ -43,7 +43,7 @@ stage('Deploy to GKE') {
                 sh '''
                 export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
                 gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                gcloud config set project superb-shelter-440100-q7  
+                gcloud config set project fabled-plating-440011-d6  
                 gcloud container clusters get-credentials k8s-cluster-1 --zone us-east1-b
                 '''
             }
