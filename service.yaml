@@ -4,9 +4,9 @@ metadata:
   name: newapp-service
 spec:
   selector:
-    app: newapp  # This should match the labels in your deployment
+    app: newapp
   type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80           # External port
-      targetPort: 80     # Port on the container
+      targetPort: 80      # Port on the container
