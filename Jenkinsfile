@@ -39,13 +39,14 @@ pipeline {
 stage('Deploy to GKE') {
     steps {
         script {
-            withCredentials([file(credentialsId: 'gcpServiceAccount', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-                sh '''
-                export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
-                gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                gcloud config set project superb-shelter-440100-q7  
-                gcloud container clusters get-credentials cluster-1 --zone us-central1-c
-                '''
+           
+                        withCredentials([file(credentialsId: gcpServiceAccount, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh '''
+                        export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                        gcloud container clusters get-credentials cluster-1 --zone us-central1-c
+                        kubectl apply -f deployment.yaml
+                        '''
             }
         }
     }
