@@ -1,139 +1,47 @@
-pipeline { 
-
-    agent any 
-
-  
-
-    environment { 
-
-        DOCKER_IMAGE = "sanjanavegesna/myapp" 
-
-        K8S_NAMESPACE = "default"  // Update if needed 
-
-        KUBECONFIG_CRED_ID = "kubeconfig-id"  // Kubernetes credential ID 
-
-        DOCKER_CREDENTIALS_ID = "docker-pass"  // DockerHub credentials 
-
-    } 
-
-  
-
-    stages { 
-
-        stage('Clone Repository') { 
-
-            steps { 
-
-                git branch: 'main', url: 'https://github.com/deepikatendulkar1/swe645.git' 
-
-            } 
-
-        } 
-
-  
-
-        stage('Build Application') { 
-
-            steps { 
-
-                script { 
-
-                    sh 'npm install'   // Replace with your build command 
-
-                    sh 'npm run build' // Replace with your build command 
-
-                } 
-
-            } 
-
-        } 
-
-  
-
-        stage('Build Docker Image') { 
-
-            steps { 
-
-                script { 
-
-                    docker.build(DOCKER_IMAGE) 
-
-                } 
-
-            } 
-
-        } 
-
-  
-
-        stage('Push Docker Image') { 
-
-            steps { 
-
-                script { 
-
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS_ID) { 
-
-                        docker.image(DOCKER_IMAGE).push('latest') 
-
-                    } 
-
-                } 
-
-            } 
-
-        } 
-
-  
-
-        stage('Deploy to Kubernetes') { 
-
-            steps { 
-
-                script { 
-
-                    withKubeConfig([credentialsId: KUBECONFIG_CRED_ID]) { 
-
-                        sh ''' 
-
-                        kubectl set image deployment/your-app your-app=${DOCKER_IMAGE}:latest -n ${K8S_NAMESPACE} 
-
-                        kubectl rollout status deployment/your-app -n ${K8S_NAMESPACE} 
-
-                        ''' 
-
-                    } 
-
-                } 
-
-            } 
-
-        } 
-
-    } 
-
-  
-
-    post { 
-
-        always { 
-
-            echo 'Cleaning up...' 
-
-        } 
-
-        success { 
-
-            echo 'Deployment successful!' 
-
-        } 
-
-        failure { 
-
-            echo 'Deployment failed.' 
-
-        } 
-
-    } 
-
+pipeline {
+    agent any
+    environment {
+        registry = "sanjanavegesna/myapp"
+        registryCredential = 'docker-pass'
+        gcpProject = 'fabled-plating-440011-d6'
+        gcpServiceAccount = 'jenkins1@fabled-plating-440011-d6.iam.gserviceaccount.com'
+    }
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git branch: 'main', url: 'https://github.com/deepikatendulkar1/swe645'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${registry}:${env.BUILD_NUMBER}")
+                }
+            }
+        }
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', registryCredential) {
+                        dockerImage.push("latest")
+                        dockerImage.push("${env.BUILD_NUMBER}")
+                    }
+                }
+            }
+        }
+        stage('Deploy to GKE') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: gcpServiceAccount, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh '''
+                        export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                        gcloud container clusters get-credentials k8s-cluster-1 --zone us-east1-b
+                        kubectl apply -f deployment.yaml
+                        '''
+                    }
+                }
+            }
+        }
+    }
 }
