@@ -4,12 +4,19 @@ pipeline {
         registry = "sanjanavegesna/myapp"
         registryCredential = 'docker-pass'
         gcpProject = 'fabled-plating-440011-d6'
-        gcpServiceAccount = 'gcpServiceAccount'
+        gcpServiceAccount = 'jenkins1@fabled-plating-440011-d6.iam.gserviceaccount.com'
     }
     stages {
         stage('Clone Repository') {
             steps {
                 git branch: 'main', url: 'https://github.com/deepikatendulkar1/swe645'
+            }
+        }
+        stage('Check Docker Version') {
+            steps {
+                script {
+                    sh 'docker --version'
+                }
             }
         }
         stage('Build Docker Image') {
