@@ -39,7 +39,7 @@ pipeline {
 stage('Deploy to GKE') {
     steps {
         script {
-            withCredentials([file(credentialsId: 'your-credentials-id', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+            withCredentials([file(credentialsId: 'gcpServiceAccount', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
                 sh '''
                 export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
                 gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
