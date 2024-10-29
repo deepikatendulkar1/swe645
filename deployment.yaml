@@ -1,4 +1,4 @@
- apiVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: newapp
@@ -15,6 +15,5 @@ spec:
       containers:
       - name: newapp-container
         image: sanjanavegesna/latest
-        imagePullPolicy: Always
         ports:
         - containerPort: 80
