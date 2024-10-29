@@ -4,7 +4,7 @@ pipeline {
         registry = "sanjanavegesna/myapp"
         registryCredential = 'docker-pass'
         gcpProject = 'fabled-plating-440011-d6'
-        gcpServiceAccount = 'jenkins1@fabled-plating-440011-d6.iam.gserviceaccount.com'
+        gcpServiceAccount = 'gcpServiceAccount'
     }
     stages {
         stage('Clone Repository') {
