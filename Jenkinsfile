@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        registry = "sanjanavegesna"
+        registry = "sanjanavegesna/newapp"
         registryCredential = 'docker-pass'
         gcpProject = 'superb-shelter-440100-q7'
         gcpServiceAccount = 'gcpServiceAccount'
