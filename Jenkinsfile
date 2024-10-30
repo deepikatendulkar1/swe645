@@ -22,7 +22,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("${registry}:${env.BUILD_NUMBER}")
+                    // Add cache busting to ensure files are updated
+                    def cacheBust = System.currentTimeMillis() // Use current timestamp as cache buster
+                    dockerImage = docker.build("${registry}:${env.BUILD_NUMBER}", "--build-arg CACHEBUST=${cacheBust} .")
                 }
             }
         }
@@ -45,9 +47,9 @@ pipeline {
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                         gcloud config set project ${gcpProject}  # Set the GCP project
                         gcloud container clusters get-credentials cluster-1 --zone us-central1-c
-                        kubectl apply -f deployment.yaml
-                        kubectl apply -f service.yaml
-                        kubectl delete pod -l app=newapp
+                        kubectl apply -f deployment.yaml || { echo 'Deployment failed' ; exit 1; }
+                        kubectl apply -f service.yaml || { echo 'Service application failed' ; exit 1; }
+                        kubectl delete pod -l app=newapp || { echo 'Failed to delete pods' ; exit 1; }
                         '''
                     }
                 }
