@@ -4,7 +4,7 @@ pipeline {
         registry = "sanjanavegesna/newapp"
         registryCredential = 'docker-pass'
         gcpProject = 'cool-adviser-440223-d1'
-        gcpServiceAccount= 'gcpServiceAccount'
+        gcpServiceAccount = 'gcpServiceAccount'
     }
     stages {
         stage('Clone Repository') {
@@ -36,24 +36,22 @@ pipeline {
                 }
             }
         }
-stage('Deploy to GKE') {
-    steps {
-        script {
-           
-                        withCredentials([file(credentialsId: gcpServiceAccount, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+        stage('Deploy to GKE') {
+            steps {
+                script {
+                    withCredentials([file(credentialsId: gcpServiceAccount, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
                         sh '''
                         export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                        gcloud config set project ${gcpProject}  # Set the GCP project
                         gcloud container clusters get-credentials cluster-1 --zone us-central1-c
                         kubectl apply -f deployment.yaml
                         kubectl apply -f service.yaml
                         kubectl delete pod -l app=newapp
-                        
                         '''
+                    }
+                }
             }
         }
     }
 }
-
-                }
-            }
