@@ -13,6 +13,8 @@ COPY survey.html /var/www/html
 COPY IMG_4195.jpeg /var/www/html
 COPY error.html /var/www/html
 COPY default.conf /etc/nginx/sites-available/default
+COPY map2.jpg /var/www/html
+COPY myphoto.jpg /var/www/html
 
 # Enable the Nginx default site
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
